@@ -7,6 +7,12 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .yearForm {
+    margin-top: 30px;
+    margin-left: 80px;
+    width:20%
+  }
 }
 
 .main {
@@ -50,17 +56,18 @@ body {
   .data {
     flex: 3;
 
-    .type{
+    .type {
       color: rgb(75, 74, 74);
       font-size: 1.5em;
-      font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     }
 
-    .message, .submitted{
+    .message,
+    .submitted {
       color: #a0a2a3;
     }
 
-    .completed{
+    .completed {
       display: inline-block;
       color: white;
       background-color: #4CAF50;

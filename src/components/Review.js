@@ -5,12 +5,13 @@ import { grey } from '@mui/material/colors';
 
 const Review = ({ data }) => {
     const [showModal, setShowModal] = useState(false);
-    const [icon, setIcon] = useState(<CheckCircleOutline style={{ color: grey[300], fontSize: '2rem' }} />);
+    const checkIcon = <CheckCircleOutline style={{ color: grey[300], fontSize: '2rem' }} />;
+    const petIcon = <Pets style={{ color: grey[300], fontSize: '2rem' }} />;
 
     const handleReviewClick = () => {
         setShowModal(true);
-        setIcon(<Pets style={{ color: grey[300], fontSize: '2rem' }} />);
         data.downloadPdf = true;
+        data.isReviewed = true;
     };
 
     const handleClose = () => setShowModal(false);
@@ -24,7 +25,8 @@ const Review = ({ data }) => {
         <div className="review-row">
             <div className="icon">
                 <div className="icon-wrapper">
-                    <span>{icon}</span>
+                    <span>{!data.isReviewed && checkIcon}</span>
+                    <span>{data.isReviewed && petIcon}</span>
                 </div>
             </div>
             <div className="data">
