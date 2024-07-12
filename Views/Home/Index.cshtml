@@ -1,0 +1,231 @@
+@{
+    ViewBag.Title = "FrontEndTest 2";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div id="grid"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "@Url.Action("GetAllEmployees", "Home")",
+                    dataType: "json"
+                }
+            },
+            pageSize: 10,
+            schema: {
+                model: {
+                    fields: {
+                        FullName: { type: "string" },
+                        EmployeeID: { type: "string" },
+                        SIN: { type: "string" },
+                        PhoneNumber: { type: "string" },
+                        City: { type: "string" },
+                        Salary: { type: "number" },
+                        Country: { type: "string" }
+                    }
+                }
+            }
+        });
+
+        $("#grid").kendoGrid({
+            dataSource: dataSource,
+            columnMenu: {
+                filterable: false
+            },
+            height: 680,
+            editable: "incell",
+            pageable: true,
+            sortable: true,
+            navigatable: true,
+            resizable: true,
+            reorderable: true,
+            groupable: true,
+            filterable: true,
+            toolbar: ["excel", "pdf", "search"],
+            pdfExport: function (e) {
+                const width = e.sender.wrapper.width();
+                e.sender.wrapperClone.width(width);
+                e.sender.wrapperClone.addClass('k-clone');
+            },
+            columns: [
+                {
+                    field: "FullName",
+                    title: "Full Name",
+                    template: function (dataItem) {
+                        // Genera las iniciales del nombre
+                        var initials = dataItem.FullName.split(' ').map(function (name) {
+                            return name.charAt(0);
+                        }).join('');
+                        return "<div class='avatar-container'>" +
+                            "<div class='avatar'>" + initials + "</div>" +
+                                "<div class='employee-info'>" +
+                                    "<div class='employee-name'>" + dataItem.FullName + "</div>" +
+                                    "<div class='employee-id'>" + dataItem.EmployeeID + "</div>" +
+                                "</div>"
+                            "</div>";
+                    }
+                },
+                {
+                    field: "City",
+                    title: "City",
+                    template: function(dataItem) {
+                        if (dataItem.City === "Mississauga") {
+                            return "<span class='badge badge-primary'>" + dataItem.City + "</span>";
+                        }
+                        return dataItem.City;
+                    }
+                },
+                {
+                    field: "PhoneNumber",
+                    title: "Phone Number",
+                    template: function (dataItem) {
+                        var phone = dataItem.PhoneNumber.toString();
+                        return "(" + phone.substring(0, 3) + ") " + phone.substring(3, 6) + " " + phone.substring(6);
+                    }
+                },
+                {
+                    field: "SIN",
+                    title: "SIN",
+                    template: function (dataItem) {
+                        var sin = dataItem.SIN.toString();
+                        return sin.substring(0, 3) + "-" + sin.substring(3, 6) + "-" + sin.substring(6);
+                    }
+                },
+                {
+                    field: "Salary",
+                    title: "Salary",
+                    format: "{0:c2}"
+                },
+                {
+                    field: "Country",
+                    title: "Country",
+                    template: function(dataItem) {
+                        if (dataItem.Country === "Canada") {
+                            return "<span style='color:#db0f0f'>" + dataItem.Country + "</span>";
+                        }
+                        return dataItem.Country;
+                    }
+                }
+            ]
+        });
+
+        // Display total count of employees from Mississauga
+        dataSource.fetch(function() {
+            var mississaugaEmployees = dataSource.data().filter(function(employee) {
+                return employee.City === "Mississauga";
+            });
+            $("<div class='alert alert-info'>" + mississaugaEmployees.length + " Employees from Mississauga</div>").insertBefore("#grid");
+        });
+    });
+</script>
+
+<style type="text/css">
+    .k-pdf-export .k-clone,
+    .k-pdf-export .k-loader-container {
+        display: none;
+    }
+
+    .customer-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-left: 5px;
+    }
+
+    .customer-name {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        padding-left: 3px;
+    }
+
+    .k-grid tr .checkbox-align {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .product-photo {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-size: 32px 35px;
+        background-position: center center;
+        vertical-align: middle;
+        line-height: 32px;
+        box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+        margin-right: 5px;
+    }
+
+    .product-name {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 32px;
+        padding-left: 3px;
+    }
+
+    .k-rating-container .k-rating-item {
+        padding: 4px 0;
+    }
+
+        .k-rating-container .k-rating-item .k-icon {
+            font-size: 16px;
+        }
+
+    .dropdown-country-wrap {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+        .dropdown-country-wrap img {
+            margin-right: 10px;
+        }
+
+    #grid .k-grid-edit-row > td > .k-rating {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .avatar-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #4857DB;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-size: 12px;
+    }
+
+    .employee-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .employee-id {
+        display: flex;
+        justify-content: center;
+        color: #747476;
+    }
+</style>
